@@ -1,3 +1,5 @@
+// Author : Subham Gupta
+// http://codeforces.com/profile/_sceptile_
 package com.algorithm;
 
 public class SegmentTreeRangeMinimumQuery extends SegmentTree {
