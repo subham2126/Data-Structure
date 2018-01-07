@@ -1,6 +1,6 @@
 package com.algorithm;
 
-public class SegmentTree {
+public abstract  class SegmentTree {
 
     long Tree[];
 
@@ -8,18 +8,17 @@ public class SegmentTree {
 
     int size;
 
-    SegmentTree(long arr[], int size) {
+    long NOTFOUND;
+
+    SegmentTree(long arr[], int size,long NOTFOUND) {
 
         this.Tree = new long[4 * size];
         this.arr = arr;
         this.size = size;
+        this.NOTFOUND = NOTFOUND;
     }
 
-    private void mergeTree(int idx) {
-
-        Tree[idx] = Long.max(Tree[(2 * idx + 1)], Tree[(2 * idx + 2)]);
-
-    }
+    public abstract long mergeTree(long a , long b) ;
 
     private void buildTree(int low, int high, int idx) {
 
@@ -30,7 +29,7 @@ public class SegmentTree {
             int mid = (low + high) / 2;
             buildTree(low, mid, 2 * idx + 1);
             buildTree(mid + 1, high, 2 * idx + 2);
-            mergeTree(idx);
+            Tree[idx]=mergeTree(Tree[2*idx+1], Tree[2*idx+2]);
         }
 
 
@@ -42,13 +41,13 @@ public class SegmentTree {
 
     private long rangeQueryCalculate(int low, int high, int idx, int clow, int chigh) {
         if (high < clow || low > chigh)
-            return Long.MIN_VALUE;
+            return NOTFOUND;
         if (clow >= low && chigh <= high)
             return Tree[idx];
         else {
 
             int cmid = (clow + chigh) / 2;
-            return Long.max(rangeQueryCalculate(low, high, 2 * idx + 1, clow, cmid), rangeQueryCalculate(low, high, 2 * idx + 2, cmid + 1, chigh));
+            return mergeTree(rangeQueryCalculate(low, high, 2 * idx + 1, clow, cmid), rangeQueryCalculate(low, high, 2 * idx + 2, cmid + 1, chigh));
         }
 
     }
@@ -70,7 +69,7 @@ public class SegmentTree {
             int mid = (low + high) / 2;
             updateQuery(index, value, 2 * idx + 1, low, mid);
             updateQuery(index, value, 2 * idx + 2, mid + 1, high);
-            mergeTree(idx);
+            Tree[idx]= mergeTree(Tree[2*idx+1], Tree[2*idx+2]);
         }
 
 
